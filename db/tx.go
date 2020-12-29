@@ -5,29 +5,28 @@ import (
 	"time"
 )
 
-//
-//type SingedTx struct {
-//	Tx
-//	Sig string `json:"signature"`
-//}
-
-type Tx struct {
-	From         Account   `json:"from"`
-	To           Account   `json:"to"`
-	Value        float32   `json:"value"`
-	AccountNonce uint64    `json:"nonce"`
-	Data         string    `json:"data"`
-	Timestamp    time.Time `json:"timestamp"`
+type SingedTx struct {
+	Tx
+	Sig string `json:"signature"`
 }
 
-func NewTx(from Account, to Account, value float32, nonce uint64, data string) *Tx {
+type Tx struct {
+	From         Account `json:"from"`
+	To           Account `json:"to"`
+	Value        float64 `json:"value"`
+	AccountNonce uint64  `json:"nonce"`
+	Data         string  `json:"data"`
+	Time         int64   `json:"timestamp"`
+}
+
+func NewTx(from Account, to Account, value float64, nonce uint64, data string) *Tx {
 	return &Tx{
 		From:         from,
 		To:           to,
 		Value:        value,
 		AccountNonce: nonce,
 		Data:         data,
-		Timestamp:    time.Now(),
+		Time:         time.Now().UnixNano(),
 	}
 }
 

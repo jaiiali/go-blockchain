@@ -1,6 +1,9 @@
 package db
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"time"
+)
 
 var genesisData = []byte(`
 {
@@ -13,6 +16,19 @@ var genesisData = []byte(`
 
 type genesis struct {
 	Balances map[Account]float32 `json:"balances"`
+}
+
+func genesisBlock() *Block {
+	b := Block{
+		ParentHash: HashType{},
+		Height:     1,
+		Time:       time.Now().UnixNano(),
+		Txs:        nil,
+	}
+
+	b.Hash = b.CalcHash()
+
+	return &b
 }
 
 func loadGenesis() (genesis, error) {

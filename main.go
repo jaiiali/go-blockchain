@@ -1,57 +1,49 @@
 package main
 
 import (
-	"github.com/davecgh/go-spew/spew"
+	"log"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/jaiiali/go-simple-blockchain/db"
 )
 
-func main() {
-	//gen, _ := db.LoadGenesis()
-	//fmt.Printf("%#v\n\n", gen)
+var storage *db.BlockChain
 
+func init() {
+	storage = db.NewBlockChain()
+}
+
+func main() {
 	var from, to db.Account
 
+	// first transaction
 	from = db.NewAccount("a")
 	to = db.NewAccount("b")
 	tx1 := db.NewTx(from, to, 100.0, 1, "")
-	//fmt.Println(tx1)
 
+	// second transaction
 	from = db.NewAccount("c")
 	to = db.NewAccount("d")
 	tx2 := db.NewTx(from, to, 200.0, 2, "")
-	//fmt.Println(tx2)
 
-	//
-	//state, err := db.NewState()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//err = state.Add(tx)
-	//if err != nil {
-	//	fmt.Println(err.Error())
-	//}
-	//fmt.Printf("%#v\n\n", state)
-	//
-	//err = state.Store()
-	//if err != nil {
-	//	fmt.Println(err.Error())
-	//}
-	//fmt.Printf("%#v\n\n", state)
+	// third transaction
+	from = db.NewAccount("c")
+	to = db.NewAccount("d")
+	tx3 := db.NewTx(from, to, 200.0, 2, "")
 
 	var txs []*db.Tx
 	var b *db.Block
 
-	bc := db.NewBlockChain()
-
+	// first block
 	txs = []*db.Tx{tx1}
-	b = db.NewBlock(txs)
-	_ = bc.AddBlock(b)
+	b, _ = db.NewBlock(storage.Blocks[storage.LastHeight-1], txs)
+	_ = storage.AddBlock(b)
 
-	txs = []*db.Tx{tx2}
-	b = db.NewBlock(txs)
-	_ = bc.AddBlock(b)
+	// second block
+	txs = []*db.Tx{tx2, tx3}
+	b, _ = db.NewBlock(storage.Blocks[storage.LastHeight-1], txs)
+	_ = storage.AddBlock(b)
 
-	spew.Dump(bc)
+	spew.Dump(storage)
+	log.Fatal(run())
 }

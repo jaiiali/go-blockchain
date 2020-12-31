@@ -1,23 +1,16 @@
 package db
 
-import "time"
+import "errors"
 
 type BlockChain struct {
-	Blocks []*BlockWithHash
+	Blocks     []*Block
+	LastHeight int64
 }
 
 func NewBlockChain() *BlockChain {
-	bh := &BlockWithHash{
-		Hash: HashType{},
-		Data: Block{
-			Header: BlockHeader{
-				Time: time.Now().UnixNano(),
-			},
-		},
-	}
-
 	bc := &BlockChain{
-		Blocks: []*BlockWithHash{bh},
+		Blocks:     []*Block{genesisBlock()},
+		LastHeight: 1,
 	}
 
 	return bc
@@ -25,21 +18,21 @@ func NewBlockChain() *BlockChain {
 
 func (bc *BlockChain) AddBlock(b *Block) error {
 	// ParentHash
-	height := len(bc.Blocks)
-	b.Header.ParentHash = bc.Blocks[height-1].Hash
+	lastBlock := bc.Blocks[bc.LastHeight-1]
 
-	// Hash
-	h, err := b.Hash()
-	if err != nil {
-		return err
+	if lastBlock.Height+1 != b.Height {
+		return errors.New("height is now correct")
 	}
 
-	// BlockWithHash
-	bh := &BlockWithHash{
-		Hash: h,
-		Data: *b,
+	if lastBlock.Hash != b.ParentHash {
+		return errors.New("parentHash is now correct")
 	}
 
-	bc.Blocks = append(bc.Blocks, bh)
+	if !b.IsBlockHashValid() {
+		return errors.New("block hash is now correct")
+	}
+
+	bc.Blocks = append(bc.Blocks, b)
+	bc.LastHeight++
 	return nil
 }

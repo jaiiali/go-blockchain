@@ -2,13 +2,13 @@ package db
 
 import "errors"
 
-type BlockChain struct {
+type Blockchain struct {
 	Blocks     []*Block
 	LastHeight int64
 }
 
-func NewBlockChain() *BlockChain {
-	bc := &BlockChain{
+func NewBlockChain() *Blockchain {
+	bc := &Blockchain{
 		Blocks:     []*Block{genesisBlock()},
 		LastHeight: 1,
 	}
@@ -16,7 +16,7 @@ func NewBlockChain() *BlockChain {
 	return bc
 }
 
-func (bc *BlockChain) AddBlock(b *Block) error {
+func (bc *Blockchain) AddBlock(b *Block) error {
 	// ParentHash
 	lastBlock := bc.Blocks[bc.LastHeight-1]
 

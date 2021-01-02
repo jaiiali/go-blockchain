@@ -121,7 +121,11 @@ func handleConn(conn net.Conn) {
 
 			tx := db.NewTx(from, to, value, nonce, "")
 			txs := []*db.Tx{tx}
+
+			mutex.Lock()
 			b, err := db.NewBlock(storage.Blocks[storage.LastHeight-1], txs)
+			mutex.Unlock()
+
 			if err != nil {
 				log.Print(fmt.Errorf("block could not be generate: %w", err).Error())
 				continue

@@ -2,7 +2,6 @@ package db
 
 import (
 	"encoding/json"
-	"time"
 )
 
 var genesisData = []byte(`
@@ -19,16 +18,9 @@ type genesis struct {
 }
 
 func genesisBlock() *Block {
-	b := Block{
-		ParentHash: HashType{},
-		Height:     1,
-		Time:       time.Now().UnixNano(),
-		Txs:        nil,
-	}
+	b, _ := NewBlock(nil, nil)
 
-	b.Hash = b.CalcHash()
-
-	return &b
+	return b
 }
 
 func loadGenesis() (genesis, error) {

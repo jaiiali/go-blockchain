@@ -1,6 +1,8 @@
 package db
 
-import "errors"
+import (
+	"errors"
+)
 
 type Blockchain struct {
 	Blocks     []*Block
